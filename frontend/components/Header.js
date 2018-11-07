@@ -18,7 +18,7 @@ const Logo = styled.h1 `
         text-transform: uppercase;
         text-decoration: none;
     }
-    @media (${props => props.theme.maxWidth}) {
+    @media (max-width: ${props => props.theme.maxWidth}) {
         margin: 0;
         text-align: center;
     }
@@ -31,14 +31,14 @@ const StyledHeader = styled.header `
         grid-template-columns: auto 1fr;
         justify-content: space-between;
         align-items: stretch;
-        @media (${props => props.theme.maxWidth}) {
+        @media (max-width: ${props => props.theme.maxWidth}) {
             grid-template-columns: 1fr;
             justify-content: center;
         } 
     }
     .sub-bar {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr auto;
         border-bottom: 1px solid ${props => props.theme.lightgrey}
     }
 `
