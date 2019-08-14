@@ -2,8 +2,6 @@ type User {
   id: ID! @id
   name: String!
   email: String!
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
 }
 
 
@@ -14,7 +12,7 @@ type Item {
   image: String
   largeImage: String
   price: Int!
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
+  # createdAt: DateTime! @createdAt
+  # updatedAt: DateTime! @updatedAt
   # user: User!
 }
