@@ -1,6 +1,8 @@
+import Items from '../components/Items';
+
 const Home = props => (
     <div>
-        <p>Greetings!</p>
+        <Items />
     </div>
 );
 
