@@ -28,9 +28,8 @@ export default class CreateItem extends Component {
         description: '',
         image: '',
         largeImage: '',
-        price: 0
+        price: 0,
     };
-
 
     handleChange = ev => {
         const { name, type, value } = ev.target;
@@ -39,6 +38,27 @@ export default class CreateItem extends Component {
         this.setState({ [name]: inputValue });
     };
 
+    getFileData = files => {
+        const data = new FormData();
+
+        data.append('file', files[0]);
+        data.append('upload_preset', 'sickfits');
+
+        return data;
+    }
+
+    uploadFile = async ev => {
+        const { files } = ev.target;
+        const fileData = this.getFileData(files);
+
+        const file = await fetch('https://api.cloudinary.com/v1_1/lonelypandacloud/image/upload', {
+            method: 'POST',
+            body: fileData
+        }).then(res => res.json())
+            .catch(err => console.log('Error uploading file: ', err))
+
+        this.setState({ image: file.secure_url, largeImage: file.eager[0].secure_url })
+    }
 
     handleSubmit = createItem => async ev => {
         ev.preventDefault();
@@ -55,6 +75,18 @@ export default class CreateItem extends Component {
                     <Form onSubmit={this.handleSubmit(createItem)}>
                         <ErrorMessage error={error} />
                         <fieldset disabled={loading} aria-busy={loading}>
+                            <label htmlFor="file">
+                                Image
+                                <input
+                                    type="file"
+                                    id="file"
+                                    name="file"
+                                    placeholder="Upload an image"
+                                    onChange={this.uploadFile}
+                                    required
+                                />
+                                {this.state.image && <img src={this.state.image} alt="Upload Preview" width="200" />}
+                            </label>
                             <label htmlFor="title">
                                 Title
                                 <input
