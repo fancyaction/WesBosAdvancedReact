@@ -9,15 +9,17 @@ const Mutations = {
         }, info);
 
         return item;
+    },
+    async updateItem(parent, args, ctx, info) {
+        const updates = { ...args };
+        delete updates.id;
+
+        const item = await ctx.db.mutation.updateItem({
+            data: updates, where: { id: args.id }
+        }, info)
+
+        return item;
     }
-    // createDog(parent, args, context, info) {
-    //     global.dogs = global.dogs || [];
-    //     const newDog = { name: args.name };
-
-    //     global.dogs.push(newDog);
-
-    //     return newDog;
-    // }
 };
 
 
