@@ -5,7 +5,7 @@ import Title from './styles/Title';
 import ItemStyles from './styles/ItemStyles';
 import PriceTag from './styles/PriceTag';
 import formatMoney from '../lib/formatMoney';
-
+import DeleteItem from './DeleteItem';
 
 const ItemButtons = ({ item }) => (
     <div className="buttonList">
@@ -13,7 +13,7 @@ const ItemButtons = ({ item }) => (
             <a>Edit ✏</a>
         </Link>
         <button>Add To Cart</button>
-        <button>Delete</button>
+        <DeleteItem label='Delete Item' />
     </div>
 );
 
