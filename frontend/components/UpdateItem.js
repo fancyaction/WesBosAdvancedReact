@@ -19,20 +19,22 @@ const SINGLE_ITEM_QUERY = gql`
 
 const UPDATE_ITEM_MUTATION = gql`
     mutation UPDATE_ITEM_MUTATION(
-        $title: String!
-        $description: String!
-        $price: Int!
-        $image: String
-        $largeImage: String
+        $id: ID!
+        $title: String
+        $description: String
+        $price: Int
+
     ) {
-        createItem(title: $title, description: $description, price: $price, image: $image, largeImage: $largeImage) {
+        updateItem(id: $id, title: $title, description: $description, price: $price) {
             id
+            title
+            description
+            price
         }
     }
 `;
 
-
-export default class CreateItem extends Component {
+export default class UpdateItem extends Component {
     state = {};
 
     handleChange = ev => {
@@ -51,24 +53,18 @@ export default class CreateItem extends Component {
         return data;
     }
 
-    // uploadFile = async ev => {
-    //     const { files } = ev.target;
-    //     const fileData = this.getFileData(files);
+    handleSubmit = updateItemMutation => async ev => {
+        const { id } = this.props;
 
-    //     const file = await fetch('https://api.cloudinary.com/v1_1/lonelypandacloud/image/upload', {
-    //         method: 'POST',
-    //         body: fileData
-    //     }).then(res => res.json())
-    //         .catch(err => console.log('Error uploading file: ', err))
-
-    //     this.setState({ image: file.secure_url, largeImage: file.eager[0].secure_url })
-    // }
-
-    handleSubmit = createItem => async ev => {
         ev.preventDefault();
-        const res = await createItem();
+        await updateItemMutation({
+            variables: {
+                id,
+                ...this.state,
+            }
+        }).then(() => Router.push({ pathname: '/' }))
 
-        Router.push({ pathname: '/item', query: { id: res.data.createItem.id } });
+
     };
 
 
@@ -79,60 +75,49 @@ export default class CreateItem extends Component {
             <Query query={SINGLE_ITEM_QUERY} variables={{ id }}>
                 {({ data, loading }) => {
                     if (loading) { return <p>Loading...</p> }
+                    if (!data.item) { return <p>No item found for id: {id}</p> }
                     return (
                         <Mutation mutation={UPDATE_ITEM_MUTATION} variables={this.state}>
-                            {(createItem, { loading, error, called, data }) => (
-                                <Form onSubmit={this.handleSubmit(createItem)}>
+                            {(updateItem, { loading, error }) => (
+                                <Form onSubmit={this.handleSubmit(updateItem)}>
                                     <ErrorMessage error={error} />
                                     <fieldset disabled={loading} aria-busy={loading}>
-                                        {/* <label htmlFor="file">
-                                Image
-                                <input
-                                    type="file"
-                                    id="file"
-                                    name="file"
-                                    placeholder="Upload an image"
-                                    onChange={this.uploadFile}
-                                    required
-                                />
-                                {this.state.image && <img src={this.state.image} alt="Upload Preview" width="200" />}
-                            </label> */}
                                         <label htmlFor="title">
                                             Title
-                                <input
+                                                <input
                                                 type="text"
                                                 id="title"
                                                 name="title"
                                                 placeholder="Title"
-                                                value={this.state.title}
+                                                defaultValue={data.item.title}
                                                 onChange={this.handleChange}
                                                 required
                                             />
                                         </label>
                                         <label htmlFor="price">
                                             Price
-                                <input
+                                        <input
                                                 type="number"
                                                 id="price"
                                                 name="price"
                                                 placeholder={0}
-                                                value={this.state.price}
+                                                defaultValue={data.item.price}
                                                 onChange={this.handleChange}
                                                 required
                                             />
                                         </label>
                                         <label htmlFor="description">
                                             Description
-                                <textarea
+                                        <textarea
                                                 id="description"
                                                 name="description"
                                                 placeholder="Enter a description"
-                                                value={this.state.description}
+                                                defaultValue={data.item.description}
                                                 onChange={this.handleChange}
                                                 required
                                             />
                                         </label>
-                                        <button type="submit">Submit</button>
+                                        <button type="submit">{loading ? 'Saving' : 'Save'} Changes</button>
                                     </fieldset>
                                 </Form>
                             )}
