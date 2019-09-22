@@ -1,8 +1,8 @@
 import Items from '../components/Items';
 
-const Home = props => (
+const Home = ({ query, ...props }) => (
     <div>
-        <Items />
+        <Items page={parseFloat(query.page) || 1} />
     </div>
 );
 
