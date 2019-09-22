@@ -13,7 +13,7 @@ const ItemButtons = ({ item }) => (
             <a>Edit ✏</a>
         </Link>
         <button>Add To Cart</button>
-        <DeleteItem label='Delete Item' />
+        <DeleteItem id={item.id} label='Delete Item' />
     </div>
 );
 
